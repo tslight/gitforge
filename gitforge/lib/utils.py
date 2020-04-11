@@ -17,7 +17,7 @@ else:
 
 def chkdir(path):
     try:
-        path = os.path.expanduser(path)
+        path = os.path.normpath(os.path.expanduser(path))
         os.makedirs(path, exist_ok=True)
         return path
     except Exception as exc:
