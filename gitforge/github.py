@@ -1,11 +1,8 @@
 import os
 import logging
 
-from subprocess import call
-from chopt import chopt
-
 from .lib.github import GitHub
-from .lib.utils import args_vs_config, get_config, mklog
+from .lib.utils import choose_repo, args_vs_config, get_config, mklog
 from .lib.args import get_args
 
 
@@ -21,16 +18,10 @@ def main():
     else:
         repos = github.get_all_repos()
 
-    if repos:
-        if args.interactive:
-            paths = [r["path"] for r in repos]
-            chosen = chopt(sorted(paths))
-            if chosen:
-                repos = [r for r in repos if r["path"] in chosen]
-            else:
-                return
-            call("clear" if os.name == "posix" else "cls")
+    if args.interactive:
+        repos = choose_repo(repos)
 
+    if args.repos:
         if args.command == "sync":
             output = github.batch_run(github.clone_or_pull, repos)
         elif args.command == "status":
@@ -40,8 +31,6 @@ def main():
 
         if output:
             print("\n".join(output))
-    else:
-        print("Nothing to see here.")
 
 
 if __name__ == "__main__":

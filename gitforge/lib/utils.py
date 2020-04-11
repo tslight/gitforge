@@ -4,6 +4,8 @@ import requests
 import subprocess
 import sys
 from configparser import ConfigParser, ParsingError
+from chopt import chopt
+from subprocess import call
 
 if os.name == "posix":
     from .color import ansi_color as color
@@ -72,6 +74,13 @@ def get_config(path, forge):
         return forge
 
     raise ParsingError(f"Failed to retrieve configuration from {path}.")
+
+
+def choose_repo(repos):
+    paths = [p["path"] for p in repos]
+    chosen = chopt(sorted(paths))
+    call("clear" if os.name == "posix" else "cls")
+    return [p for p in repos if chosen and p["path"] in chosen]
 
 
 def is_git_repo(path):
