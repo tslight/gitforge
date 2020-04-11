@@ -24,9 +24,6 @@ def main():
     else:
         token = config["token"]
 
-    if args.protocol not in ["ssh", "http"]:
-        raise ValueError("Invalid protocol specified: {args.protocol}")
-
     logging.debug(
         f"\nTOKEN: {token}\nDESTINATION: {destination}\nPROTOCOL: {args.protocol}"
     )

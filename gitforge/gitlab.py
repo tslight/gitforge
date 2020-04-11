@@ -29,9 +29,6 @@ def main():
     else:
         token = config["token"]
 
-    if args.protocol not in ["ssh", "http"]:
-        raise ValueError("Invalid protocol specified: {args.protocol}")
-
     logging.debug(
         f"\nTOKEN: {token}\nDESTINATION: {destination}\nPROTOCOL: {args.protocol}"
     )
@@ -58,8 +55,10 @@ def main():
 
         if args.command == "sync":
             output = gitlab.batch_run(gitlab.clone_or_pull, repos)
-        elif args.run == "status":
+        elif args.command == "status":
             output = gitlab.batch_run(gitlab.status, repos)
+        elif args.command == "lfj":
+            output = gitlab.last_failed_job(repos)
         else:
             output = [f"Invalid command: {args.command}"]
 
