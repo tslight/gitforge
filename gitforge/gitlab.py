@@ -79,8 +79,11 @@ def main():
     if projects:
         if args.interactive:
             paths = [p["path"] for p in projects]
-            chosen = chopt(paths)
-            projects = [p for p in projects if p["path"] in chosen]
+            chosen = chopt(sorted(paths))
+            if chosen:
+                projects = [p for p in projects if p["path"] in chosen]
+            else:
+                return
             call("clear" if os.name == "posix" else "cls")
 
         if args.run == "sync":

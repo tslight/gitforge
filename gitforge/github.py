@@ -74,8 +74,11 @@ def main():
     if repos:
         if args.interactive:
             paths = [r["path"] for r in repos]
-            chosen = chopt(paths)
-            repos = [r for r in repos if r["path"] in chosen]
+            chosen = chopt(sorted(paths))
+            if chosen:
+                repos = [r for r in repos if r["path"] in chosen]
+            else:
+                return
             call("clear" if os.name == "posix" else "cls")
 
         if args.command == "sync":
