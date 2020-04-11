@@ -57,8 +57,6 @@ def main():
             output = gitlab.batch_run(gitlab.clone_or_pull, repos)
         elif args.command == "status":
             output = gitlab.batch_run(gitlab.status, repos)
-        elif args.command == "lfj":
-            output = gitlab.last_failed_job(repos)
         else:
             output = [f"Invalid command: {args.command}"]
 

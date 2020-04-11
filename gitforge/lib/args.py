@@ -16,7 +16,7 @@ def get_args(forge):
     parser.add_argument(
         "-c",
         "--command",
-        choices=["sync", "status", "lfj"],
+        choices=["sync", "status"],
         default="sync",
         help="command to run",
     )
