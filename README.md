@@ -33,42 +33,37 @@ Generate a **GitLab** *Personal Access Token* [here](https://gitlab.com/profile/
 ### GITHUB
 
 ``` text
-usage: github [-h] [-C PATH] [-r REPO [REPO ...]] [-d DESTINATION]
-                  [-t TOKEN] [-P SSH/HTTP] [-i] [-c GIT COMMAND] [-v]
+usage: github [-h] [-r REPO [REPO ...]] [-d DESTINATION] [-t TOKEN]
+              [-p SSH/HTTP] [-i] [-c COMMAND] [-v]
 
-Clone or pull repos
+CLI GitHub API Client
 
 optional arguments:
   -h, --help            show this help message and exit
-  -C PATH, --config PATH
-                        path to azure configuration file
   -r REPO [REPO ...], --repos REPO [REPO ...]
                         github repo names
   -d DESTINATION, --destination DESTINATION
                         destination path
   -t TOKEN, --token TOKEN
                         github personal access token
-  -P SSH/HTTP, --protocol SSH/HTTP
-                        protocol to use - ssh or http
+  -p SSH/HTTP, --protocol SSH/HTTP
+                        protocol to use - ssh or http (defaults to ssh)
   -i, --interactive     choose repos interactively
-  -c GIT COMMAND, --command GIT COMMAND
-                        git command to run
+  -c COMMAND, --command COMMAND
+                        command to run - sync or status (defaults to sync)
   -v                    increase verbosity
 ```
 
 ### GITLAB
 
 ``` text
-usage: gitlab [-h] [-C PATH] [-p PROJECT [PROJECT ...] | -g GROUP
-                  [GROUP ...]] [-d DESTINATION] [-t TOKEN] [-P SSH/HTTP] [-i]
-                  [-r GIT COMMAND] [-v]
+usage: gitlab [-h] [-p PROJECT [PROJECT ...] | -g GROUP [GROUP ...]]
+              [-d DESTINATION] [-t TOKEN] [-P SSH/HTTP] [-i] [-r COMMAND] [-v]
 
-Clone or pull repos
+CLI GitLab API Client
 
 optional arguments:
   -h, --help            show this help message and exit
-  -C PATH, --config PATH
-                        path to azure configuration file
   -p PROJECT [PROJECT ...], --projects PROJECT [PROJECT ...]
                         gitlab project names
   -g GROUP [GROUP ...], --groups GROUP [GROUP ...]
@@ -78,9 +73,9 @@ optional arguments:
   -t TOKEN, --token TOKEN
                         gitlab personal access token
   -P SSH/HTTP, --protocol SSH/HTTP
-                        protocol to use - ssh or http
+                        protocol to use - ssh or http (defaults to ssh)
   -i, --interactive     choose projects interactively
-  -r GIT COMMAND, --run GIT COMMAND
-                        git command to run
+  -r COMMAND, --run COMMAND
+                        command to run - sync or status (defaults to sync)
   -v                    increase verbosity
 ```

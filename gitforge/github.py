@@ -10,15 +10,7 @@ from .lib.utils import chkdir, chkfile, get_config, mklog
 
 
 def get_args():
-    parser = ArgumentParser(description="Clone or pull repos")
-    parser.add_argument(
-        "-C",
-        "--config",
-        type=chkfile,
-        metavar=("PATH"),
-        default=f"{os.path.expanduser('~/.config/gitforge/config')}",
-        help="path to azure configuration file",
-    )
+    parser = ArgumentParser(description="CLI GitHub API Client")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         "-r", "--repos", metavar=("REPO"), nargs="+", help="github repo names",
@@ -30,11 +22,11 @@ def get_args():
         "-t", "--token", required=False, help="github personal access token",
     )
     parser.add_argument(
-        "-P",
+        "-p",
         "--protocol",
         metavar=("SSH/HTTP"),
         default="ssh",
-        help="protocol to use - ssh or http",
+        help="protocol to use - ssh or http (defaults to ssh)",
     )
     parser.add_argument(
         "-i", "--interactive", action="store_true", help="choose repos interactively"
@@ -42,9 +34,9 @@ def get_args():
     parser.add_argument(
         "-c",
         "--command",
-        metavar=("GIT COMMAND"),
+        metavar=("COMMAND"),
         default="sync",
-        help="git command to run",
+        help="command to run - sync or status (defaults to sync)",
     )
     parser.add_argument("-v", action="count", default=0, help="increase verbosity")
     return parser.parse_args()
@@ -53,7 +45,7 @@ def get_args():
 def main():
     args = get_args()
     mklog(args.v)
-    config = get_config(args.config, "github")
+    config = get_config(f"{os.path.expanduser('~/.config/gitforge/config')}", "github")
 
     if args.destination:
         destination = args.destination
