@@ -11,18 +11,13 @@ else:
     from .color import win_color as color
 
 
-def chkfile(path):
-    if os.path.isfile(os.path.expanduser(path)):
-        return os.path.abspath(os.path.expanduser(path))
-
-    raise FileNotFoundError(f"{path} is not a file.")
-
-
 def chkdir(path):
-    if os.path.isdir(os.path.expanduser(path)):
-        return os.path.abspath(os.path.expanduser(path))
-
-    raise FileNotFoundError(f"{path} is not a directory.")
+    try:
+        path = os.path.expanduser(path)
+        os.makedirs(path, exist_ok=True)
+        return path
+    except Exception as exc:
+        raise exc
 
 
 def mklog(verbosity):

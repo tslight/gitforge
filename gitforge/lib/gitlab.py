@@ -37,7 +37,7 @@ class GitLab(Git):
             logging.info(f"Retrieving repos from {self.url}/projects... ")
             repos = get(self.url + "/projects", self.headers, self.params, results=[])
             logging.debug(json.dumps(repos, indent=2))
-            repos = [self.transform_repo(p) for p in repos]
+            repos = [self.transform_repo(r) for r in repos]
             return repos
         except Exception as exc:
             logging.debug(exc)
@@ -84,7 +84,7 @@ class GitLab(Git):
                     results=[],
                 )
                 logging.debug(json.dumps(repos, indent=2))
-                repos = [self.transform_repo(p) for p in repos]
+                repos = [self.transform_repo(r) for r in repos]
                 all_repos.extend(repos)
             except Exception as exc:
                 logging.debug(exc)
@@ -95,9 +95,13 @@ class GitLab(Git):
     def get_repos(self, requested_repos):
         repos = []
 
-        for p in self.get_all_repos():
+        for repo in self.get_all_repos():
             for name in requested_repos:
-                if p["name"] == name or p["path"] == name or p["path"].endswith(name):
-                    repos.append(p)
+                if (
+                    repo["name"] == name
+                    or repo["path"] == name
+                    or repo["path"].endswith(name)
+                ):
+                    repos.append(repo)
 
         return repos

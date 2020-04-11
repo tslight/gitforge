@@ -14,13 +14,18 @@ def get_args(forge):
         description=f"CLI {forge} API Client", formatter_class=SortingHelpFormatter,
     )
     parser.add_argument(
-        "-r", "--repos", metavar=("REPO"), nargs="+", help=f"{forge} repo names",
+        "-c",
+        "--command",
+        choices=["sync", "status"],
+        metavar=("COMMAND"),
+        default="sync",
+        help="command to run - sync or status",
     )
     parser.add_argument(
         "-d", "--destination", type=chkdir, required=False, help="destination path",
     )
     parser.add_argument(
-        "-t", "--token", required=False, help=f"{forge} personal access token",
+        "-i", "--interactive", action="store_true", help="choose repos interactively"
     )
     parser.add_argument(
         "-p",
@@ -31,15 +36,10 @@ def get_args(forge):
         help="protocol to use - ssh or http",
     )
     parser.add_argument(
-        "-i", "--interactive", action="store_true", help="choose repos interactively"
+        "-r", "--repos", metavar=("REPO"), nargs="+", help=f"{forge} repo names",
     )
     parser.add_argument(
-        "-c",
-        "--command",
-        choices=["sync", "status"],
-        metavar=("COMMAND"),
-        default="sync",
-        help="command to run - sync or status",
+        "-t", "--token", required=False, help=f"{forge} personal access token",
     )
     parser.add_argument(
         "-v", "--verbosity", action="count", default=0, help="increase verbosity",
