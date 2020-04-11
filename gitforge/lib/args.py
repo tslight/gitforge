@@ -18,7 +18,7 @@ def get_args(forge):
         "--command",
         choices=["sync", "status", "lfj"],
         default="sync",
-        help="command to run - sync, status or lfj (last failed job)",
+        help="command to run",
     )
     parser.add_argument(
         "-d", "--destination", type=chkdir, required=False, help="destination path",
@@ -31,7 +31,7 @@ def get_args(forge):
         "--protocol",
         choices=["ssh", "http"],
         default="ssh",
-        help="protocol to use - ssh or http",
+        help="protocol to use",
     )
     parser.add_argument(
         "-r", "--repos", nargs="+", help=f"{forge} repo names",
