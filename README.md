@@ -2,8 +2,8 @@
 
 **W.I.P.** API clients for GitHub & GitLab.
 
-So far only the commands - `sync` *(clone a repository, or pull from it, if it
-is already cloned)* or `status` *(show the local status of the repository)* are
+So far, only the commands - `sync` *(clone a repository, or pull from it, if it
+is already cloned)* & `status` *(show the local status of the repository)* are
 implemented..
 
 **Coming soon** - A wider array of forges, commands and configuration...
@@ -15,7 +15,8 @@ implemented..
 ## CONFIGURATION
 
 Add personal access tokens and desired destination directories to
-`~/.config/gitforge/config`.
+`~/.config/gitforge/config`. This file will be automatically installed if
+`gitforge` is installed via `pip`, you just need to edit to suit your needs.
 
 ``` ini
 [github]
