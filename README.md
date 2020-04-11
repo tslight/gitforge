@@ -18,9 +18,20 @@ the repository).
 ## CONFIGURATION
 
 Add personal access tokens and desired destination directories to
-`~/.config/gitforge/config`. These defaults can be overridden on the command
-line with the `--token` and `--destination` arguments. See below for more
-details.
+`~/.config/gitforge/config`.
+
+``` ini
+[github]
+destination = ~/src/github
+token = GITHUB-PERSONAL-ACCESS-TOKEN
+
+[gitlab]
+destination = ~/src/gitlab
+token = GITLAB-PERSONAL-ACCESS-TOKEN
+```
+
+These defaults can be overridden on the command line with the `--token` and
+`--destination` arguments. See below for more details.
 
 ### AUTHENTICATION
 
