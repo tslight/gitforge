@@ -1,7 +1,3 @@
-import os
-import logging
-
-
 from .lib.gitlab import GitLab
 from .lib.utils import args_vs_config, choose_repo, get_config, mklog
 from .lib.args import get_args
@@ -14,7 +10,7 @@ def main():
     )
     args = args.parse_args()
     mklog(args.verbosity)
-    config = get_config(os.path.expanduser("~/.config/gitforge/config"), "gitlab")
+    config = get_config("GitLab")
     token, destination = args_vs_config(args, config)
     gitlab = GitLab(token, destination, args.protocol)
     repos = []

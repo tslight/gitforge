@@ -1,6 +1,3 @@
-import os
-import logging
-
 from .lib.github import GitHub
 from .lib.utils import choose_repo, args_vs_config, get_config, mklog
 from .lib.args import get_args
@@ -9,7 +6,7 @@ from .lib.args import get_args
 def main():
     args = get_args("GitHub").parse_args()
     mklog(args.verbosity)
-    config = get_config(os.path.expanduser("~/.config/gitforge/config"), "github")
+    config = get_config("GitHub")
     token, destination = args_vs_config(args, config)
     github = GitHub(token, destination, args.protocol)
 

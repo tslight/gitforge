@@ -14,28 +14,33 @@ implemented..
 
 ## CONFIGURATION
 
-Add personal access tokens and desired destination directories to
-`~/.config/gitforge/config`. This file will be automatically installed if
-`gitforge` is installed via `pip`, you just need to edit to suit your needs.
+On first run you will be asked to enter a destination directory to sync to or
+check the status of. You will also be asked to enter your Personal Access
+Token.
+
+Generate a **GitHub** *Personal Access Token* [here](https://github.com/settings/tokens).
+
+Generate a **GitLab** *Personal Access Token* [here](https://gitlab.com/profile/personal_access_tokens).
+
+These details will be stored in `site.USER_BASE/share/gitforge/config`, which,
+in a POSIX environment, is usually `~/.local/share/gitforge/config`. I'm
+actually not sure where Python's `site.USER_BASE` is on Windows. Probably
+somewhere in `AppData`..
+
+The configuration looks something like this:
 
 ``` ini
-[github]
-destination = ~/src/github
+[GitHub]
+destination = /path/to/directory/to/store/repos
 token = GITHUB-PERSONAL-ACCESS-TOKEN
 
-[gitlab]
-destination = ~/src/gitlab
+[GitLab]
+destination = /path/to/directory/to/store/repos
 token = GITLAB-PERSONAL-ACCESS-TOKEN
 ```
 
 These defaults can be overridden on the command line with the `--token` and
 `--destination` arguments. See below for more details.
-
-### AUTHENTICATION
-
-Generate a **GitHub** *Personal Access Token* [here](https://github.com/settings/tokens).
-
-Generate a **GitLab** *Personal Access Token* [here](https://gitlab.com/profile/personal_access_tokens).
 
 ## OPTIONS
 

@@ -3,9 +3,11 @@ import logging
 import requests
 import subprocess
 import sys
+import site
 from configparser import ConfigParser, ParsingError
 from chopt import chopt
 from subprocess import call
+import readline
 
 if os.name == "posix":
     from .color import ansi_color as color
@@ -58,22 +60,44 @@ def args_vs_config(args, config):
     return token, destination
 
 
-def get_config(path, forge):
+def get_config(forge):
+    if site.check_enableusersite:
+        path = f"{site.USER_BASE}/share/gitforge/config"
+    else:
+        path = f"{sys.prefix}/share/gitforge/config"
+
+    logging.debug(f"Looking for configuration at {path}...")
+
     try:
         config = ConfigParser()
         config.read(path)
-        forge = config[forge]
     except Exception as error:
         logging.error(error)
         raise ParsingError(f"Failed to retrieve configuration from {path}.")
 
-    forge["destination"] = chkdir(forge["destination"])
+    logging.info(f"Found default configuration at {path}.")
 
-    if forge["token"]:
-        logging.info(f"Found configuration at {path}.")
-        return forge
+    # https://stackoverflow.com/a/56119373/11133327
+    readline.set_completer_delims(" \t\n=")
+    readline.parse_and_bind("tab: complete")
 
-    raise ParsingError(f"Failed to retrieve configuration from {path}.")
+    if config[forge]["destination"] == "/path/to/directory/to/store/repos":
+        config[forge]["destination"] = input(
+            f"{color.fg.yellow}{forge}{color.fg.cyan} Destination Directory:{color.reset} "
+        )
+        config[forge]["destination"] = chkdir(config[forge]["destination"])
+        with open(path, "w") as configfile:
+            config.write(configfile)
+
+    if config[forge]["token"] == f"{forge.upper()}-PERSONAL-ACCESS-TOKEN":
+        readline.parse_and_bind("tab: complete")
+        config[forge]["token"] = input(
+            f"{color.fg.yellow}{forge}{color.fg.cyan} Personal Access Token:{color.reset} "
+        )
+        with open(path, "w") as configfile:
+            config.write(configfile)
+
+    return config[forge]
 
 
 def choose_repo(repos):

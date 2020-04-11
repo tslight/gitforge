@@ -1,7 +1,7 @@
-[github]
-destination = ~/src/github
+[GitHub]
+destination = /path/to/directory/to/store/repos
 token = GITHUB-PERSONAL-ACCESS-TOKEN
 
-[gitlab]
-destination = ~/src/gitlab
+[GitLab]
+destination = /path/to/directory/to/store/repos
 token = GITLAB-PERSONAL-ACCESS-TOKEN
