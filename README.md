@@ -2,12 +2,9 @@
 
 **W.I.P.** API clients for GitHub & GitLab.
 
-Run commands or query api on all projects or groups of an authenticated GitLab
-or GitHub user.
-
-So far only GitLab & GitHub are supported and the commands - `sync` (clone a
-repository, or pull from it if already cloned) or `status` (show the local status of
-the repository).
+So far only the commands - `sync` *(clone a repository, or pull from it, if it
+is already cloned)* or `status` *(show the local status of the repository)* are
+implemented..
 
 **Coming soon** - A wider array of forges, commands and configuration...
 
@@ -44,49 +41,49 @@ Generate a **GitLab** *Personal Access Token* [here](https://gitlab.com/profile/
 ### GITHUB
 
 ``` text
-usage: github [-h] [-r REPO [REPO ...]] [-d DESTINATION] [-t TOKEN]
-              [-p SSH/HTTP] [-i] [-c COMMAND] [-v]
+usage: github [-h] [-c {sync,status}] [-d DESTINATION] [-i] [-p {ssh,http}]
+              [-r REPOS [REPOS ...]] [-t TOKEN] [-v]
 
 CLI GitHub API Client
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -r REPO [REPO ...], --repos REPO [REPO ...]
-                        github repo names
+  -c {sync,status}, --command {sync,status}
+                        command to run (default: sync)
   -d DESTINATION, --destination DESTINATION
-                        destination path
+                        destination path (default: None)
+  -h, --help            show this help message and exit
+  -i, --interactive     choose repos interactively (default: False)
+  -p {ssh,http}, --protocol {ssh,http}
+                        protocol to use (default: ssh)
+  -r REPOS [REPOS ...], --repos REPOS [REPOS ...]
+                        GitHub repo names (default: None)
   -t TOKEN, --token TOKEN
-                        github personal access token
-  -p SSH/HTTP, --protocol SSH/HTTP
-                        protocol to use - ssh or http (defaults to ssh)
-  -i, --interactive     choose repos interactively
-  -c COMMAND, --command COMMAND
-                        command to run - sync or status (defaults to sync)
-  -v                    increase verbosity
+                        GitHub personal access token (default: None)
+  -v, --verbosity       increase verbosity (default: 0)
 ```
 
 ### GITLAB
 
 ``` text
-usage: gitlab [-h] [-p PROJECT [PROJECT ...] | -g GROUP [GROUP ...]]
-              [-d DESTINATION] [-t TOKEN] [-P SSH/HTTP] [-i] [-r COMMAND] [-v]
+usage: gitlab [-h] [-c {sync,status}] [-d DESTINATION] [-i] [-p {ssh,http}]
+              [-r REPOS [REPOS ...]] [-t TOKEN] [-v] [-g GROUP [GROUP ...]]
 
 CLI GitLab API Client
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -p PROJECT [PROJECT ...], --projects PROJECT [PROJECT ...]
-                        gitlab project names
-  -g GROUP [GROUP ...], --groups GROUP [GROUP ...]
-                        gitlab group names
+  -c {sync,status}, --command {sync,status}
+                        command to run (default: sync)
   -d DESTINATION, --destination DESTINATION
-                        destination path
+                        destination path (default: None)
+  -g GROUP [GROUP ...], --groups GROUP [GROUP ...]
+                        gitlab group names (default: None)
+  -h, --help            show this help message and exit
+  -i, --interactive     choose repos interactively (default: False)
+  -p {ssh,http}, --protocol {ssh,http}
+                        protocol to use (default: ssh)
+  -r REPOS [REPOS ...], --repos REPOS [REPOS ...]
+                        GitLab repo names (default: None)
   -t TOKEN, --token TOKEN
-                        gitlab personal access token
-  -P SSH/HTTP, --protocol SSH/HTTP
-                        protocol to use - ssh or http (defaults to ssh)
-  -i, --interactive     choose projects interactively
-  -r COMMAND, --run COMMAND
-                        command to run - sync or status (defaults to sync)
-  -v                    increase verbosity
+                        GitLab personal access token (default: None)
+  -v, --verbosity       increase verbosity (default: 0)
 ```

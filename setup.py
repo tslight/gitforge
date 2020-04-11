@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gitforge",
-    version="0.0.2",
+    version="0.0.3",
     author="Toby Slight",
     author_email="tslight@pm.me",
     description="Git Forge API Client..",
@@ -18,7 +18,7 @@ setuptools.setup(
     url="https://github.com/tslight/gitforge",
     install_requires=["requests", "chopt"],
     packages=setuptools.find_packages(),
-    data_files=[(f"{os.path.expanduser('~/.config/gitforge')}", ["config"])],
+    data_files=[(os.path.expanduser("~/.config/gitforge"), ["config"])],
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: ISC License (ISCL)",
