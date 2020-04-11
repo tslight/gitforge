@@ -1,54 +1,23 @@
 import os
 import logging
 
-from argparse import ArgumentParser
 from subprocess import call
 from chopt import chopt
 
 from .lib.gitlab import GitLab
-from .lib.utils import chkdir, chkfile, get_config, mklog
-
-
-def get_args():
-    parser = ArgumentParser(description="CLI GitLab API Client")
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-p", "--projects", metavar=("PROJECT"), nargs="+", help="gitlab project names",
-    )
-    group.add_argument(
-        "-g", "--groups", metavar=("GROUP"), nargs="+", help="gitlab group names",
-    )
-    parser.add_argument(
-        "-d", "--destination", type=chkdir, required=False, help="destination path",
-    )
-    parser.add_argument(
-        "-t", "--token", required=False, help="gitlab personal access token",
-    )
-    parser.add_argument(
-        "-P",
-        "--protocol",
-        metavar=("SSH/HTTP"),
-        default="ssh",
-        help="protocol to use - ssh or http (defaults to ssh)",
-    )
-    parser.add_argument(
-        "-i", "--interactive", action="store_true", help="choose projects interactively"
-    )
-    parser.add_argument(
-        "-r",
-        "--run",
-        metavar=("COMMAND"),
-        default="sync",
-        help="command to run - sync or status (defaults to sync)",
-    )
-    parser.add_argument("-v", action="count", default=0, help="increase verbosity")
-    return parser.parse_args()
+from .lib.utils import get_config, mklog
+from .lib.args import get_args
 
 
 def main():
-    args = get_args()
-    mklog(args.v)
+    args = get_args("GitLab")
+    args.add_argument(
+        "-g", "--groups", metavar=("GROUP"), nargs="+", help="gitlab group names",
+    )
+    args = args.parse_args()
+    mklog(args.verbosity)
     config = get_config(f"{os.path.expanduser('~/.config/gitforge/config')}", "gitlab")
+    repos = []
 
     if args.destination:
         destination = args.destination
@@ -69,27 +38,28 @@ def main():
 
     gitlab = GitLab(token, destination, args.protocol)
 
-    if args.projects:
-        projects = gitlab.get_projects(args.projects)
-    elif args.groups:
-        projects = gitlab.get_group_projects(args.groups)
+    if not args.repos and not args.groups:
+        repos.extend(gitlab.get_all_repos())
     else:
-        projects = gitlab.get_all_projects()
+        if args.repos:
+            repos.extend(gitlab.get_repos(args.repos))
+        if args.groups:
+            repos.extend(gitlab.get_group_repos(args.groups))
 
-    if projects:
+    if repos:
         if args.interactive:
-            paths = [p["path"] for p in projects]
+            paths = [p["path"] for p in repos]
             chosen = chopt(sorted(paths))
             if chosen:
-                projects = [p for p in projects if p["path"] in chosen]
+                repos = [p for p in repos if p["path"] in chosen]
             else:
                 return
             call("clear" if os.name == "posix" else "cls")
 
-        if args.run == "sync":
-            output = gitlab.batch_run(gitlab.clone_or_pull, projects)
+        if args.command == "sync":
+            output = gitlab.batch_run(gitlab.clone_or_pull, repos)
         elif args.run == "status":
-            output = gitlab.batch_run(gitlab.status, projects)
+            output = gitlab.batch_run(gitlab.status, repos)
         else:
             output = [f"Invalid command: {args.command}"]
 

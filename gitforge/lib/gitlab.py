@@ -15,10 +15,10 @@ class GitLab(Git):
         self.headers = {"PRIVATE-TOKEN": token}
         self.protocol = protocol
 
-    def transform_project(self, project):
+    def transform_repo(self, repo):
         transformed = {}
 
-        for key, value in project.items():
+        for key, value in repo.items():
             if key == "id":
                 transformed["id"] = value
             elif key == "name":
@@ -32,15 +32,13 @@ class GitLab(Git):
 
         return transformed
 
-    def get_all_projects(self):
+    def get_all_repos(self):
         try:
-            logging.info(f"Retrieving projects from {self.url}/projects... ")
-            projects = get(
-                self.url + "/projects", self.headers, self.params, results=[]
-            )
-            logging.debug(json.dumps(projects, indent=2))
-            projects = [self.transform_project(p) for p in projects]
-            return projects
+            logging.info(f"Retrieving repos from {self.url}/projects... ")
+            repos = get(self.url + "/projects", self.headers, self.params, results=[])
+            logging.debug(json.dumps(repos, indent=2))
+            repos = [self.transform_repo(p) for p in repos]
+            return repos
         except Exception as exc:
             logging.debug(exc)
             raise exc
@@ -71,35 +69,35 @@ class GitLab(Git):
 
         return groups
 
-    def get_group_projects(self, groups):
+    def get_group_repos(self, groups):
         groups = self.get_subgroups(groups)
-        all_projects = []
+        all_repos = []
         for group in groups:
             try:
                 logging.info(
-                    f"Retrieving projects from {self.url}/{group['id']}/projects... "
+                    f"Retrieving repos from {self.url}/{group['id']}/projects... "
                 )
-                projects = get(
+                repos = get(
                     f"{self.url}/groups/{group['id']}/projects",
                     self.headers,
                     self.params,
                     results=[],
                 )
-                logging.debug(json.dumps(projects, indent=2))
-                projects = [self.transform_project(p) for p in projects]
-                all_projects.extend(projects)
+                logging.debug(json.dumps(repos, indent=2))
+                repos = [self.transform_repo(p) for p in repos]
+                all_repos.extend(repos)
             except Exception as exc:
                 logging.debug(exc)
                 raise exc
 
-        return all_projects
+        return all_repos
 
-    def get_projects(self, requested_projects):
-        projects = []
+    def get_repos(self, requested_repos):
+        repos = []
 
-        for p in self.get_all_projects():
-            for name in requested_projects:
+        for p in self.get_all_repos():
+            for name in requested_repos:
                 if p["name"] == name or p["path"] == name or p["path"].endswith(name):
-                    projects.append(p)
+                    repos.append(p)
 
-        return projects
+        return repos

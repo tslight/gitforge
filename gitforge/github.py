@@ -1,50 +1,17 @@
 import os
 import logging
 
-from argparse import ArgumentParser
 from subprocess import call
 from chopt import chopt
 
 from .lib.github import GitHub
-from .lib.utils import chkdir, chkfile, get_config, mklog
-
-
-def get_args():
-    parser = ArgumentParser(description="CLI GitHub API Client")
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-r", "--repos", metavar=("REPO"), nargs="+", help="github repo names",
-    )
-    parser.add_argument(
-        "-d", "--destination", type=chkdir, required=False, help="destination path",
-    )
-    parser.add_argument(
-        "-t", "--token", required=False, help="github personal access token",
-    )
-    parser.add_argument(
-        "-p",
-        "--protocol",
-        metavar=("SSH/HTTP"),
-        default="ssh",
-        help="protocol to use - ssh or http (defaults to ssh)",
-    )
-    parser.add_argument(
-        "-i", "--interactive", action="store_true", help="choose repos interactively"
-    )
-    parser.add_argument(
-        "-c",
-        "--command",
-        metavar=("COMMAND"),
-        default="sync",
-        help="command to run - sync or status (defaults to sync)",
-    )
-    parser.add_argument("-v", action="count", default=0, help="increase verbosity")
-    return parser.parse_args()
+from .lib.utils import get_config, mklog
+from .lib.args import get_args
 
 
 def main():
-    args = get_args()
-    mklog(args.v)
+    args = get_args("GitHub").parse_args()
+    mklog(args.verbosity)
     config = get_config(f"{os.path.expanduser('~/.config/gitforge/config')}", "github")
 
     if args.destination:
