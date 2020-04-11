@@ -40,6 +40,22 @@ def mklog(verbosity):
     )
 
 
+def args_vs_config(args, config):
+    if args.destination:
+        destination = args.destination
+    else:
+        destination = config["destination"]
+
+    if args.token:
+        token = args.token
+    else:
+        token = config["token"]
+
+    logging.debug(f"TOKEN: {token}, DESTINATION: {destination}")
+
+    return token, destination
+
+
 def get_config(path, forge):
     try:
         config = ConfigParser()

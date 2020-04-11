@@ -5,29 +5,15 @@ from subprocess import call
 from chopt import chopt
 
 from .lib.github import GitHub
-from .lib.utils import get_config, mklog
+from .lib.utils import args_vs_config, get_config, mklog
 from .lib.args import get_args
 
 
 def main():
     args = get_args("GitHub").parse_args()
     mklog(args.verbosity)
-    config = get_config(f"{os.path.expanduser('~/.config/gitforge/config')}", "github")
-
-    if args.destination:
-        destination = args.destination
-    else:
-        destination = config["destination"]
-
-    if args.token:
-        token = args.token
-    else:
-        token = config["token"]
-
-    logging.debug(
-        f"\nTOKEN: {token}\nDESTINATION: {destination}\nPROTOCOL: {args.protocol}"
-    )
-
+    config = get_config(os.path.expanduser("~/.config/gitforge/config"), "github")
+    token, destination = args_vs_config(args, config)
     github = GitHub(token, destination, args.protocol)
 
     if args.repos:

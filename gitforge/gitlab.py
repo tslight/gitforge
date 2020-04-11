@@ -5,7 +5,7 @@ from subprocess import call
 from chopt import chopt
 
 from .lib.gitlab import GitLab
-from .lib.utils import get_config, mklog
+from .lib.utils import args_vs_config, get_config, mklog
 from .lib.args import get_args
 
 
@@ -16,23 +16,9 @@ def main():
     )
     args = args.parse_args()
     mklog(args.verbosity)
-    config = get_config(f"{os.path.expanduser('~/.config/gitforge/config')}", "gitlab")
+    config = get_config(os.path.expanduser("~/.config/gitforge/config"), "gitlab")
     repos = []
-
-    if args.destination:
-        destination = args.destination
-    else:
-        destination = config["destination"]
-
-    if args.token:
-        token = args.token
-    else:
-        token = config["token"]
-
-    logging.debug(
-        f"\nTOKEN: {token}\nDESTINATION: {destination}\nPROTOCOL: {args.protocol}"
-    )
-
+    token, destination = args_vs_config(args, config)
     gitlab = GitLab(token, destination, args.protocol)
 
     if not args.repos and not args.groups:
