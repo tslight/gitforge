@@ -14,9 +14,9 @@ def get_args(forge):
         description=f"CLI {forge} API Client", formatter_class=SortingHelpFormatter,
     )
     parser.add_argument(
-        "-c",
-        "--command",
+        "command",
         choices=["sync", "status"],
+        nargs="?",
         default="sync",
         help="command to run",
     )

@@ -21,13 +21,11 @@ def main():
     if args.interactive:
         repos = choose_repo(repos)
 
-    if args.repos:
+    if repos:
         if args.command == "sync":
             output = github.batch_run(github.clone_or_pull, repos)
         elif args.command == "status":
             output = github.batch_run(github.status, repos)
-        else:
-            output = [f"Invalid command: {args.command}"]
 
         if output:
             print("\n".join(output))

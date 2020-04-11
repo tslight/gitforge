@@ -41,14 +41,16 @@ Generate a **GitLab** *Personal Access Token* [here](https://gitlab.com/profile/
 ### GITHUB
 
 ``` text
-usage: github [-h] [-c {sync,status}] [-d DESTINATION] [-i] [-p {ssh,http}]
+usage: github [-h] [-d DESTINATION] [-i] [-p {ssh,http}]
               [-r REPOS [REPOS ...]] [-t TOKEN] [-v]
+              [{sync,status}]
 
 CLI GitHub API Client
 
+positional arguments:
+  {sync,status}         command to run (default: sync)
+
 optional arguments:
-  -c {sync,status}, --command {sync,status}
-                        command to run (default: sync)
   -d DESTINATION, --destination DESTINATION
                         destination path (default: None)
   -h, --help            show this help message and exit
@@ -65,14 +67,16 @@ optional arguments:
 ### GITLAB
 
 ``` text
-usage: gitlab [-h] [-c {sync,status}] [-d DESTINATION] [-i] [-p {ssh,http}]
+usage: gitlab [-h] [-d DESTINATION] [-i] [-p {ssh,http}]
               [-r REPOS [REPOS ...]] [-t TOKEN] [-v] [-g GROUP [GROUP ...]]
+              [{sync,status}]
 
 CLI GitLab API Client
 
+positional arguments:
+  {sync,status}         command to run (default: sync)
+
 optional arguments:
-  -c {sync,status}, --command {sync,status}
-                        command to run (default: sync)
   -d DESTINATION, --destination DESTINATION
                         destination path (default: None)
   -g GROUP [GROUP ...], --groups GROUP [GROUP ...]

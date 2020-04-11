@@ -35,8 +35,6 @@ def main():
             output = gitlab.batch_run(gitlab.clone_or_pull, repos)
         elif args.command == "status":
             output = gitlab.batch_run(gitlab.status, repos)
-        else:
-            output = [f"Invalid command: {args.command}"]
 
         if output:
             print("\n".join(output))
