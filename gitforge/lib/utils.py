@@ -50,6 +50,8 @@ def args_vs_config(args, config):
     else:
         destination = config["destination"]
 
+    destination = chkdir(destination)
+
     if args.token:
         token = args.token
     else:
