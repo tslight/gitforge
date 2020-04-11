@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gitforge",
-    version="0.0.3",
+    version="0.0.4",
     author="Toby Slight",
     author_email="tslight@pm.me",
     description="Git Forge API Client..",
