@@ -1,0 +1,7 @@
+[github]
+destination = ~/src/github
+token = GITHUB-PERSONAL-ACCESS-TOKEN
+
+[gitlab]
+destination = ~/src/gitlab
+token = GITLAB-PERSONAL-ACCESS-TOKEN
