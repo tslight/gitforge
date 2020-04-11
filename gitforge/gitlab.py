@@ -5,9 +5,7 @@ from .lib.args import get_args
 
 def main():
     args = get_args("GitLab")
-    args.add_argument(
-        "-g", "--groups", metavar=("GROUP"), nargs="+", help="gitlab group names",
-    )
+    args.add_argument("-g", "--groups", nargs="+", help="gitlab group names")
     args = args.parse_args()
     mklog(args.verbosity)
     config = get_config("GitLab")
