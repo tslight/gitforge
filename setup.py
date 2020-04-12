@@ -9,14 +9,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gitforge",
-    version="0.0.6",
+    version="0.0.7",
     author="Toby Slight",
     author_email="tslight@pm.me",
     description="Git Forge API Client..",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tslight/gitforge",
-    install_requires=["requests", "chopt"],
+    install_requires=["chopt", "pandas", "requests"],
     packages=setuptools.find_packages(),
     data_files=[("share/gitforge", ["config"])],
     classifiers=(
