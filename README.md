@@ -2,12 +2,6 @@
 
 **W.I.P.** API clients for GitHub & GitLab.
 
-So far, only the commands - `sync` *(clone a repository, or pull from it, if it
-is already cloned)*, `status` *(show the local status of the repository)* &
-`jobs` *(view the logs of the last failed CI job)* are implemented..
-
-**Coming soon** - A wider array of forges, commands and configuration...
-
 ## INSTALLATION
 
 `pip install gitforge`
@@ -42,19 +36,37 @@ token = GITLAB-PERSONAL-ACCESS-TOKEN
 These defaults can be overridden on the command line with the `--token` and
 `--destination` arguments. See below for more details.
 
+## COMMANDS
+
+`sync`: Clone repositories *(and groups in the case of GitLab)* to
+destination. If they already exist in destination - update them to the latest
+remote commit.
+
+`status`: Check repositories in destination for uncommitted changes.
+
+`jobs`: **GitLab ONLY** View the log of the last failed CI job run in repository.
+
+`schedules`: **GitLab ONLY** View all CI pipeline schedules ordered by next run
+time.
+
+**N.B.** If no repositories or groups are specified with `-r` or `-g`, then run
+command against all of them... This may take a while depending on how many
+repositories you have in your account.
+
 ## OPTIONS
 
 ### GITHUB
 
 ``` text
-usage: github [-h] [-d DESTINATION] [-i] [-p {ssh,http}]
-              [-r REPOS [REPOS ...]] [-t TOKEN] [-v]
-              [{sync,status}]
+usage: gh [-h] [-d DESTINATION] [-i] [-p {ssh,http}] [-r REPOS [REPOS ...]]
+          [-t TOKEN] [-v]
+          [{sync,status,jobs,schedules}]
 
 CLI GitHub API Client
 
 positional arguments:
-  {sync,status,jobs}    command to run (default: sync)
+  {sync,status,jobs,schedules}
+                        command to run (default: sync)
 
 optional arguments:
   -d DESTINATION, --destination DESTINATION
@@ -73,19 +85,20 @@ optional arguments:
 ### GITLAB
 
 ``` text
-usage: gitlab [-h] [-d DESTINATION] [-i] [-p {ssh,http}]
-              [-r REPOS [REPOS ...]] [-t TOKEN] [-v] [-g GROUP [GROUP ...]]
-              [{sync,status}]
+usage: gl [-h] [-d DESTINATION] [-i] [-p {ssh,http}] [-r REPOS [REPOS ...]]
+          [-t TOKEN] [-v] [-g GROUPS [GROUPS ...]]
+          [{sync,status,jobs,schedules}]
 
 CLI GitLab API Client
 
 positional arguments:
-  {sync,status,jobs}    command to run (default: sync)
+  {sync,status,jobs,schedules}
+                        command to run (default: sync)
 
 optional arguments:
   -d DESTINATION, --destination DESTINATION
                         destination path (default: None)
-  -g GROUP [GROUP ...], --groups GROUP [GROUP ...]
+  -g GROUPS [GROUPS ...], --groups GROUPS [GROUPS ...]
                         gitlab group names (default: None)
   -h, --help            show this help message and exit
   -i, --interactive     choose repos interactively (default: False)
@@ -100,8 +113,13 @@ optional arguments:
 
 ## EXAMPLES
 
-**Want to see the job logs of your the latest failed GitLab CI job?**
+**View job logs of latest failed GitLab CI job in "project-name" repository:**
 
-`gitlab --repos your-project-name jobs` or, if you don't like typing - `gl -r project jobs`
+`gitlab jobs -r project-name`
 
-Pipe this to `less -Rr` for maximum win: `gl -r gitforge jobs | less -Rr`. Bosh.
+Pipe this to `less -Rr` for maximum win: `gitlab -r project-name jobs | less
+-Rr`. Bosh.
+
+**View CI pipeline schedules of all projects in "group-name" group:**
+
+`gitlab schedules -g group-name`

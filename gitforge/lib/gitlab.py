@@ -180,4 +180,5 @@ class GitLab(Git):
 
         df = pd.json_normalize(all_schedules)
         df.sort_values("Next Run", inplace=True)
+
         return df.to_string(index=False)
