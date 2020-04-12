@@ -29,6 +29,8 @@ def main():
             output = gitlab.batch_run(gitlab.clone_or_pull, repos)
         elif args.command == "status":
             output = gitlab.batch_run(gitlab.status, repos)
+        elif args.command == "jobs":
+            output = gitlab.get_last_failed_jobs(repos)
 
         if output:
             print("\n".join(output))

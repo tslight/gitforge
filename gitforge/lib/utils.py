@@ -1,13 +1,15 @@
-import os
+import json
 import logging
+import os
+import readline
 import requests
 import subprocess
 import sys
 import site
+
 from configparser import ConfigParser, ParsingError
 from chopt import chopt
 from subprocess import call
-import readline
 
 if os.name == "posix":
     from .color import ansi_color as color
@@ -142,6 +144,9 @@ def paginated_requests(url, headers, params, results=[]):
                 return paginated_requests(url, headers, params={}, results=results)
             return results
         raise AssertionError(response.reason)
+    except json.decoder.JSONDecodeError:
+        results.append(response.content.decode("utf-8"))
+        return results
     except Exception as exc:
         logging.debug(exc)
         raise exc
