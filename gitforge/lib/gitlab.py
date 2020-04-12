@@ -143,41 +143,49 @@ class GitLab(Git):
     def get_last_failed_job(self, repo):
         url = f"{self.url}/projects/{repo['id']}/jobs"
 
-        logging.info(f"Retrieving jobs for {repo['name']} from {url}...")
+        logging.info(f"Retrieving jobs for {repo['path']}...")
+        logging.debug(f"URL: {url}")
         jobs = get(url, self.headers, self.params, results=[],)
+        logging.debug(json.dumps(jobs, indent=2))
 
-        failed_jobs = [job for job in jobs if job["status"] == "failed"]
-        failed_jobs = sorted(failed_jobs, reverse=True, key=lambda k: k["created_at"])
+        if jobs:
+            failed_jobs = [job for job in jobs if job["status"] == "failed"]
 
-        logging.debug(json.dumps(failed_jobs, indent=2))
-        logging.info(
-            f"Retrieving logs for {failed_jobs[0]['id']} "
-            + f"in {repo['name']} from {failed_jobs[0]['created_at']}."
-        )
+            if failed_jobs:
+                failed_jobs = sorted(
+                    failed_jobs, reverse=True, key=lambda k: k["created_at"]
+                )
 
-        last_failed_job = get(
-            f"{url}/{failed_jobs[0]['id']}/trace",
-            self.headers,
-            self.params,
-            results=[],
-        )
+                logging.debug(json.dumps(failed_jobs, indent=2))
+                logging.info(
+                    f"Retrieving logs for {failed_jobs[0]['id']} "
+                    + f"in {repo['name']} from {failed_jobs[0]['created_at']}."
+                )
 
-        last_failed_job.insert(
-            0,
-            f"{color.fg.yellow}JOB {color.fg.cyan}{failed_jobs[0]['id']} "
-            + f"{color.fg.yellow}IN {color.fg.cyan}{repo['name'].upper()} "
-            + f"{color.fg.yellow}FROM {color.fg.cyan}{failed_jobs[0]['created_at']}"
-            + f"{color.reset}\n",
-        )
+                last_failed_job = get(
+                    f"{url}/{failed_jobs[0]['id']}/trace",
+                    self.headers,
+                    self.params,
+                    results=[],
+                )
 
-        return last_failed_job
+                last_failed_job.insert(
+                    0,
+                    f"{color.fg.yellow}JOB {color.fg.cyan}{failed_jobs[0]['id']} "
+                    + f"{color.fg.yellow}IN {color.fg.cyan}{repo['name'].upper()} "
+                    + f"{color.fg.yellow}FROM {color.fg.cyan}{failed_jobs[0]['created_at']}"
+                    + f"{color.reset}\n",
+                )
+
+                return last_failed_job
 
     def get_last_failed_jobs(self, repos):
         output = []
 
         for repo in repos:
             last_failed_job = self.get_last_failed_job(repo)
-            output.extend(last_failed_job)
+            if last_failed_job:
+                output.extend(last_failed_job)
 
         return output
 
@@ -199,7 +207,8 @@ class GitLab(Git):
 
         for repo in repos:
             url = f"{self.url}/projects/{repo['id']}/pipeline_schedules"
-            logging.info(f"Retrieving schedule for {repo['name']} from {url}...")
+            logging.info(f"Retrieving schedules for {repo['path']}...")
+            logging.debug(f"URL: {url}")
             schedules = get(url, self.headers, self.params, results=[])
             schedules = [self.transform_schedule(s, repo) for s in schedules]
             all_schedules.extend(schedules)
