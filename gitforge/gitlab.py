@@ -31,9 +31,13 @@ def main():
             output = gitlab.batch_run(gitlab.status, repos)
         elif args.command == "jobs":
             output = gitlab.get_last_failed_jobs(repos)
+        elif args.command == "schedules":
+            output = gitlab.get_pipeline_schedules(repos)
 
-        if output:
+        if type(output) is list:
             print("\n".join(output))
+        else:
+            print(output)
 
 
 if __name__ == "__main__":

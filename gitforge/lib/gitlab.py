@@ -1,6 +1,8 @@
 import json
 import logging
 import os
+import pandas as pd
+
 from .git import Git
 from .utils import paginated_requests as get
 
@@ -152,3 +154,30 @@ class GitLab(Git):
             output.extend(last_failed_job)
 
         return output
+
+    def transform_schedule(self, schedule, repo):
+        transformed = {"Project": repo["path"]}
+
+        for key, value in schedule.items():
+            if key == "description":
+                transformed["Description"] = value
+            elif key == "cron":
+                transformed["Crontab"] = value
+            elif key == "next_run_at":
+                transformed["Next Run"] = value
+
+        return transformed
+
+    def get_pipeline_schedules(self, repos):
+        all_schedules = []
+
+        for repo in repos:
+            url = f"{self.url}/projects/{repo['id']}/pipeline_schedules"
+            logging.info(f"Retrieving schedule for {repo['name']} from {url}...")
+            schedules = get(url, self.headers, self.params, results=[])
+            schedules = [self.transform_schedule(s, repo) for s in schedules]
+            all_schedules.extend(schedules)
+
+        df = pd.json_normalize(all_schedules)
+        df.sort_values("Next Run")
+        return df.to_string(index=False)
