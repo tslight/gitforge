@@ -150,3 +150,12 @@ def paginated_requests(url, headers, params, results=[]):
     except Exception as exc:
         logging.debug(exc)
         raise exc
+
+
+def print_output(output):
+    if output and type(output) is list:
+        print("\n".join(output))
+    elif output and type(output) is str:
+        print(output)
+    else:
+        print("Nothing to see here!")

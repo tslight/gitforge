@@ -1,5 +1,5 @@
 from .lib.github import GitHub
-from .lib.utils import choose_repo, args_vs_config, get_config, mklog
+from .lib.utils import choose_repo, args_vs_config, get_config, mklog, print_output
 from .lib.args import get_args
 
 
@@ -24,8 +24,7 @@ def main():
         elif args.command == "status":
             output = github.batch_run(github.status, repos)
 
-        if output:
-            print("\n".join(output))
+    print_output(output)
 
 
 if __name__ == "__main__":

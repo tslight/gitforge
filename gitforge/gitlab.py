@@ -1,5 +1,5 @@
 from .lib.gitlab import GitLab
-from .lib.utils import args_vs_config, choose_repo, get_config, mklog
+from .lib.utils import args_vs_config, choose_repo, get_config, mklog, print_output
 from .lib.args import get_args
 
 
@@ -44,10 +44,7 @@ def main():
         else:
             output = gitlab.get_members(get_repos(args, gitlab))
 
-    if type(output) is list:
-        print("\n".join(output))
-    else:
-        print(output)
+    print_output(output)
 
 
 if __name__ == "__main__":
