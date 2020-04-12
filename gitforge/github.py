@@ -9,6 +9,7 @@ def main():
     config = get_config("GitHub")
     token, destination = args_vs_config(args, config)
     github = GitHub(token, destination, args.protocol)
+    output = []
 
     if args.repos:
         repos = github.get_repos(args.repos)
