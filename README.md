@@ -3,8 +3,8 @@
 **W.I.P.** API clients for GitHub & GitLab.
 
 So far, only the commands - `sync` *(clone a repository, or pull from it, if it
-is already cloned)* & `status` *(show the local status of the repository)* are
-implemented..
+is already cloned)*, `status` *(show the local status of the repository)* &
+`jobs` *(view the logs of the last failed CI job)* are implemented..
 
 **Coming soon** - A wider array of forges, commands and configuration...
 
@@ -54,7 +54,7 @@ usage: github [-h] [-d DESTINATION] [-i] [-p {ssh,http}]
 CLI GitHub API Client
 
 positional arguments:
-  {sync,status}         command to run (default: sync)
+  {sync,status,jobs}    command to run (default: sync)
 
 optional arguments:
   -d DESTINATION, --destination DESTINATION
@@ -80,7 +80,7 @@ usage: gitlab [-h] [-d DESTINATION] [-i] [-p {ssh,http}]
 CLI GitLab API Client
 
 positional arguments:
-  {sync,status}         command to run (default: sync)
+  {sync,status,jobs}    command to run (default: sync)
 
 optional arguments:
   -d DESTINATION, --destination DESTINATION
@@ -97,3 +97,11 @@ optional arguments:
                         GitLab personal access token (default: None)
   -v, --verbosity       increase verbosity (default: 0)
 ```
+
+## EXAMPLES
+
+**Want to see the job logs of your the latest failed GitLab CI job?**
+
+`gitlab --repos your-project-name jobs` or, if you don't like typing - `gl -r project jobs`
+
+Pipe this to `less -Rr` for maximum win: `gl -r gitforge jobs | less -Rr`. Bosh.
