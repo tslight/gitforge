@@ -3,14 +3,7 @@ from .lib.utils import args_vs_config, choose_repo, get_config, mklog
 from .lib.args import get_args
 
 
-def main():
-    args = get_args("GitLab")
-    args.add_argument("-g", "--groups", nargs="+", help="gitlab group names")
-    args = args.parse_args()
-    mklog(args.verbosity)
-    config = get_config("GitLab")
-    token, destination = args_vs_config(args, config)
-    gitlab = GitLab(token, destination, args.protocol)
+def get_repos(args, gitlab):
     repos = []
 
     if not args.repos and not args.groups:
@@ -24,26 +17,37 @@ def main():
     if args.interactive:
         repos = choose_repo(repos)
 
-    if repos:
-        if args.command == "sync":
-            output = gitlab.batch_run(gitlab.clone_or_pull, repos)
-        elif args.command == "status":
-            output = gitlab.batch_run(gitlab.status, repos)
-        elif args.command == "jobs":
-            output = gitlab.get_last_failed_jobs(repos)
-        elif args.command == "schedules":
-            output = gitlab.get_pipeline_schedules(repos)
-        elif args.command == "members":
-            if args.groups:
-                groups = gitlab.get_groups(args.groups)
-                output = gitlab.get_members(groups, "groups")
-            else:
-                output = gitlab.get_members(repos)
+    return repos
 
-        if type(output) is list:
-            print("\n".join(output))
+
+def main():
+    args = get_args("GitLab")
+    args.add_argument("-g", "--groups", nargs="+", help="gitlab group names")
+    args = args.parse_args()
+    mklog(args.verbosity)
+    config = get_config("GitLab")
+    token, destination = args_vs_config(args, config)
+    gitlab = GitLab(token, destination, args.protocol)
+
+    if args.command == "sync":
+        output = gitlab.batch_run(gitlab.clone_or_pull, get_repos(args, gitlab))
+    elif args.command == "status":
+        output = gitlab.batch_run(gitlab.status, get_repos(args, gitlab))
+    elif args.command == "jobs":
+        output = gitlab.get_last_failed_jobs(get_repos(args, gitlab))
+    elif args.command == "schedules":
+        output = gitlab.get_pipeline_schedules(get_repos(args, gitlab))
+    elif args.command == "members":
+        if args.groups:
+            groups = gitlab.get_groups(args.groups)
+            output = gitlab.get_members(groups, "groups")
         else:
-            print(output)
+            output = gitlab.get_members(get_repos(args, gitlab))
+
+    if type(output) is list:
+        print("\n".join(output))
+    else:
+        print(output)
 
 
 if __name__ == "__main__":
