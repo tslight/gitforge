@@ -20,6 +20,14 @@ def get_repos(args, gitlab):
     return repos
 
 
+def get_members(args, gitlab):
+    if args.groups:
+        groups = gitlab.get_groups(args.groups)
+        return gitlab.get_members(groups, "groups")
+
+    return gitlab.get_members(get_repos(args, gitlab))
+
+
 def main():
     args = get_args("GitLab")
     args.add_argument("-g", "--groups", nargs="+", help="gitlab group names")
@@ -29,20 +37,15 @@ def main():
     token, destination = args_vs_config(args, config)
     gitlab = GitLab(token, destination, args.protocol)
 
-    if args.command == "sync":
-        output = gitlab.batch_run(gitlab.clone_or_pull, get_repos(args, gitlab))
-    elif args.command == "status":
-        output = gitlab.batch_run(gitlab.status, get_repos(args, gitlab))
-    elif args.command == "jobs":
-        output = gitlab.get_last_failed_jobs(get_repos(args, gitlab))
-    elif args.command == "schedules":
-        output = gitlab.get_pipeline_schedules(get_repos(args, gitlab))
-    elif args.command == "members":
-        if args.groups:
-            groups = gitlab.get_groups(args.groups)
-            output = gitlab.get_members(groups, "groups")
-        else:
-            output = gitlab.get_members(get_repos(args, gitlab))
+    command_actions = {
+        "sync": lambda: gitlab.batch_run(gitlab.clone_or_pull, get_repos(args, gitlab)),
+        "status": lambda: gitlab.batch_run(gitlab.status, get_repos(args, gitlab)),
+        "jobs": lambda: gitlab.get_last_failed_jobs(get_repos(args, gitlab)),
+        "schedules": lambda: gitlab.get_pipeline_schedules(get_repos(args, gitlab)),
+        "members": lambda: get_members(args, gitlab),
+    }
+
+    output = command_actions[args.command]()
 
     print_output(output)
 
