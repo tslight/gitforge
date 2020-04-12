@@ -49,6 +49,9 @@ remote commit.
 `schedules`: **GitLab ONLY** View all CI pipeline schedules ordered by next run
 time.
 
+`members`: **GitLab ONLY** View all members of groups or projects and their
+access level.
+
 **N.B.** If no repositories or groups are specified with `-r` or `-g`, then run
 command against all of them... This may take a while depending on how many
 repositories you have in your account.
@@ -65,7 +68,7 @@ usage: gh [-h] [-d DESTINATION] [-i] [-p {ssh,http}] [-r REPOS [REPOS ...]]
 CLI GitHub API Client
 
 positional arguments:
-  {sync,status,jobs,schedules}
+  {sync,status}
                         command to run (default: sync)
 
 optional arguments:
@@ -92,7 +95,7 @@ usage: gl [-h] [-d DESTINATION] [-i] [-p {ssh,http}] [-r REPOS [REPOS ...]]
 CLI GitLab API Client
 
 positional arguments:
-  {sync,status,jobs,schedules}
+  {sync,status,jobs,schedules,members}
                         command to run (default: sync)
 
 optional arguments:
@@ -113,13 +116,20 @@ optional arguments:
 
 ## EXAMPLES
 
-**View job logs of latest failed GitLab CI job in "project-name" repository:**
+**View job logs of latest failed GitLab CI job in "project-1" & "project-2" repository**
 
-`gitlab jobs -r project-name`
+`gitlab jobs -r project-1 project-2`
 
-Pipe this to `less -Rr` for maximum win: `gitlab -r project-name jobs | less
--Rr`. Bosh.
+Pipe this to `less -Rr` for maximum win:
 
-**View CI pipeline schedules of all projects in "group-name" group:**
+`gitlab -r project-1 project-2 jobs | less -Rr`
+
+Bosh.
+
+**View CI pipeline schedules of all projects in "group-name" group**
 
 `gitlab schedules -g group-name`
+
+**View all members of "group-name" and "project-name"**
+
+`gitlab members -g group-name -r project-name`
