@@ -7,8 +7,8 @@ import subprocess
 import sys
 import site
 
+from cpick import pick
 from configparser import ConfigParser, ParsingError
-from chopt import chopt
 from subprocess import call
 
 if os.name == "posix":
@@ -106,7 +106,7 @@ def get_config(forge):
 
 def choose_repo(repos):
     paths = [p["path"] for p in repos]
-    chosen = chopt(sorted(paths))
+    chosen = pick(items=paths)
     call("clear" if os.name == "posix" else "cls")
     return [p for p in repos if chosen and p["path"] in chosen]
 
