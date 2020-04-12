@@ -33,6 +33,12 @@ def main():
             output = gitlab.get_last_failed_jobs(repos)
         elif args.command == "schedules":
             output = gitlab.get_pipeline_schedules(repos)
+        elif args.command == "members":
+            if args.groups:
+                groups = gitlab.get_groups(args.groups)
+                output = gitlab.get_members(groups, "groups")
+            else:
+                output = gitlab.get_members(repos)
 
         if type(output) is list:
             print("\n".join(output))

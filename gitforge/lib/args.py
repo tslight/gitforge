@@ -13,9 +13,10 @@ def get_args(forge):
     parser = ArgumentParser(
         description=f"CLI {forge} API Client", formatter_class=SortingHelpFormatter,
     )
+
     parser.add_argument(
         "command",
-        choices=["sync", "status", "jobs", "schedules"],
+        choices=["sync", "status", "jobs", "schedules", "members"],
         nargs="?",
         default="sync",
         help="command to run",
@@ -42,4 +43,5 @@ def get_args(forge):
     parser.add_argument(
         "-v", "--verbosity", action="count", default=0, help="increase verbosity",
     )
+
     return parser

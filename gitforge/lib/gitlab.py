@@ -40,12 +40,26 @@ class GitLab(Git):
 
         return transformed
 
+    def transform_group(self, group):
+        transformed = {}
+
+        for key, value in group.items():
+            if key == "id":
+                transformed["id"] = value
+            elif key == "name":
+                transformed["name"] = value
+            elif key == "full_path":
+                transformed["path"] = value
+
+        return transformed
+
     def get_all_repos(self):
         try:
             logging.info(f"Retrieving repos from {self.url}/projects... ")
             repos = get(self.url + "/projects", self.headers, self.params, results=[])
             logging.debug(json.dumps(repos, indent=2))
             repos = [self.transform_repo(r) for r in repos]
+            logging.debug(json.dumps(repos, indent=2))
             return repos
         except Exception as exc:
             logging.debug(exc)
@@ -55,6 +69,8 @@ class GitLab(Git):
         try:
             logging.info(f"Retrieving groups from {self.url}/groups... ")
             groups = get(self.url + "/groups", self.headers, self.params, results=[])
+            logging.debug(json.dumps(groups, indent=2))
+            groups = [self.transform_group(g) for g in groups]
             logging.debug(json.dumps(groups, indent=2))
             return groups
         except Exception as exc:
@@ -66,8 +82,8 @@ class GitLab(Git):
 
         for grp in self.get_all_groups():
             for group in requested_groups:
-                path_elements = grp["full_path"].split("/")
-                explicit_subgroup = grp["full_path"].startswith(group)
+                path_elements = grp["path"].split("/")
+                explicit_subgroup = grp["path"].startswith(group)
                 implicit_subgroup = group in path_elements and path_elements.index(
                     group
                 ) < path_elements.index(grp["name"])
@@ -99,6 +115,16 @@ class GitLab(Git):
                 raise exc
 
         return all_repos
+
+    def get_groups(self, requested_groups):
+        groups = []
+
+        for group in self.get_all_groups():
+            for name in requested_groups:
+                if group["name"] == name:
+                    groups.append(group)
+
+        return groups
 
     def get_repos(self, requested_repos):
         repos = []
@@ -180,5 +206,43 @@ class GitLab(Git):
 
         df = pd.json_normalize(all_schedules)
         df.sort_values("Next Run", inplace=True)
+
+        return df.to_string(index=False)
+
+    def transform_members(self, members, resource, resource_type):
+        transformed = {resource_type.capitalize(): resource["path"]}
+        levels = {
+            50: "Owner",
+            40: "Maintainer",
+            30: "Developer",
+            20: "Reporter",
+            10: "Guest",
+        }
+        for key, value in members.items():
+            if key == "name":
+                transformed["Users"] = value
+            elif key == "access_level":
+                transformed["Access"] = levels[value]
+
+        return transformed
+
+    def get_members(self, resources, resource_type="projects"):
+        all_members = []
+
+        for resource in resources:
+            url = f"{self.url}/{resource_type}/{resource['id']}/members/all"
+            logging.info(
+                f"Retrieving members for {resource_type} {resource['name']} from {url}..."
+            )
+            members = get(url, self.headers, self.params, results=[])
+            logging.debug(json.dumps(members, indent=2))
+            members = [
+                self.transform_members(m, resource, resource_type) for m in members
+            ]
+            logging.debug(json.dumps(members, indent=2))
+            all_members.extend(members)
+
+        df = pd.json_normalize(all_members)
+        df.sort_values(resource_type.capitalize(), inplace=True)
 
         return df.to_string(index=False)
