@@ -66,15 +66,16 @@ class Git:
     def batch_run(self, method, repos):
         output = []
 
-        with ThreadPoolExecutor(max_workers=len(repos)) as executor:
-            future_job = {executor.submit(method, repo): repo for repo in repos}
-            for future in as_completed(future_job):
-                try:
-                    result = future.result()
-                except ValueError as error:
-                    logging.error(error)
-                else:
-                    if result:
-                        output.append(result)
+        if repos:
+            with ThreadPoolExecutor(max_workers=len(repos)) as executor:
+                future_job = {executor.submit(method, repo): repo for repo in repos}
+                for future in as_completed(future_job):
+                    try:
+                        result = future.result()
+                    except ValueError as error:
+                        logging.error(error)
+                    else:
+                        if result:
+                            output.append(result)
 
         return output
