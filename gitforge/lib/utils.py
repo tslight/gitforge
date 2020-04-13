@@ -106,7 +106,7 @@ def get_config(forge):
 
 def choose_repo(repos):
     paths = [p["path"] for p in repos]
-    chosen = pick(items=paths)
+    chosen = pick(items=sorted(paths))
     call("clear" if os.name == "posix" else "cls")
     return [p for p in repos if chosen and p["path"] in chosen]
 
