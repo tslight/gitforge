@@ -126,6 +126,9 @@ up in your configuration file**
 
 `github` for GitHub
 
+**N.B.** If you have not set up a configuration file or run the command before
+you will be prompted for the destination directory and your Personal Access Token.
+
 **Do the same as above but to an alternative directory, and use HTTP instead of
 SSH**
 
