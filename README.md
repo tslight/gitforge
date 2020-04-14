@@ -40,7 +40,7 @@ These defaults can be overridden on the command line with the `--token` and
 
 `sync`: Clone repositories *(and groups in the case of GitLab)* to
 destination. If they already exist in destination - update them to the latest
-remote commit.
+remote commit. This is the default behaviour if no command is specified.
 
 `status`: Check repositories in destination for uncommitted changes.
 
