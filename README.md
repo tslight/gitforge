@@ -116,13 +116,52 @@ optional arguments:
 
 ## EXAMPLES
 
+With all of these examples if you want more output or a better understanding of
+what's going on use the `-v` argument.
+
+**Clone or pull all repositories that you are a member of in the directory set
+up in your configuration file**
+
+`gitlab` for GitLab
+
+`github` for GitHub
+
+**Do the same as above but to an alternative directory, and use HTTP instead of
+SSH**
+
+`gitlab -d ~/path/to/alternative/directory -p http`
+
+`github -d ~/path/to/alternative/directory -p http`
+
+**Limit this action to only the "Example-Groups" and the "Example-Repos"**
+
+`gitlab -d ~/path/to/alternative/directory -g Example-Group-1 Example-Group-2
+Example-Repo-1 Example-Repo-2`
+
+**N.B.** The group argument only works with GitLab. Also, all child groups will
+be included when specifiying a parent group.
+
+**Choose from a TUI menu the repositories you want to work with from the "Example-Group"**
+
+`gitlab -g example-group -i`
+
+You will be presented with a TUI menu which you can use the arrow keys to
+navigate and the space bar to select repositories from.
+
+**View the status of all the repositories in the directory set up in your
+configuration**
+
+`gitlab status` for GitLab
+
+`github status` for GitHub
+
 **View job logs of latest failed GitLab CI job in "project-1" & "project-2" repository**
 
 `gitlab jobs -r project-1 project-2`
 
 Pipe this to `less -Rr` for maximum win:
 
-`gitlab -r project-1 project-2 jobs | less -Rr`
+`gitlab jobs -r project-1 project-2 | less -Rr`
 
 Bosh.
 
