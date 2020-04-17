@@ -10,6 +10,7 @@ import site
 from cpick import pick
 from configparser import ConfigParser, ParsingError
 from subprocess import call
+from .curses import pager
 
 if os.name == "posix":
     from .color import ansi_color as color
@@ -154,8 +155,8 @@ def paginated_requests(url, headers, params, results=[]):
 
 def print_output(output):
     if output and type(output) is list:
-        print("\n".join(output))
+        pager("\n".join(output))
     elif output and type(output) is str:
-        print(output)
+        pager(output)
     else:
         print("Nothing to see here!")
