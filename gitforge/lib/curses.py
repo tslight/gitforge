@@ -6,6 +6,7 @@ import cgitb
 import curses
 import curses.ascii
 import os
+import re
 from .culor import addstr
 
 os.environ.setdefault("ESCDELAY", "12")  # otherwise it takes an age!
@@ -14,10 +15,10 @@ cgitb.enable(format="text")
 
 
 def event_loop(stdscr, lines):
-    lines = lines.split("\n")
+    lines = re.split(f"{os.linesep}|\\n|\\r|\\x1b\\[0K", lines)
     maxy, maxx = stdscr.getmaxyx()
     longest = len(max(lines, key=len))
-    pad = curses.newpad(len(lines), longest + 1)
+    pad = curses.newpad(len(lines) + 1, longest + 1)
     pad.keypad(True)  # use function keys
     curses.curs_set(0)  # hide the cursor
     curses.start_color()
