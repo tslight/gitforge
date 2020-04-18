@@ -15,7 +15,14 @@ cgitb.enable(format="text")
 
 
 def event_loop(stdscr, lines):
-    lines = re.split(f"{os.linesep}|\\n|\\r|\\x1b\\[0K", lines)
+    # lines = re.split(f"{os.linesep}|\\n|\\r|\\x1b\\[0K", string, flags=re.IGNORECASE)
+    # lines = re.sub("\\x1b\\[0K.*$|\\x1b\\[0\\;m.*$", "", string, flags=re.IGNORECASE,)
+    # lines = re.sub("\\x1b\\[0K.*$|\\x1b\\[0\\;m.*$", "", string, flags=re.IGNORECASE,)
+    # lines = re.sub(".*\\x1b\\[0K\\r$", "", lines, flags=re.IGNORECASE)
+
+    # lines = re.sub(".*\\x1b\\[0K\\r$", "", lines, flags=re.IGNORECASE,)
+    lines = re.split(f"{os.linesep}|\\n|\\r", lines)
+    # lines = lines.split(os.linesep)
     # lines = [line for line in lines if line]
     maxy, maxx = stdscr.getmaxyx()
     longest = len(max(lines, key=len))
