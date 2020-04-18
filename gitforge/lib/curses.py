@@ -16,7 +16,7 @@ cgitb.enable(format="text")
 
 def event_loop(stdscr, lines):
     lines = re.split(f"{os.linesep}|\\n|\\r|\\x1b\\[0K", lines)
-    lines = [line for line in lines if line]
+    # lines = [line for line in lines if line]
     maxy, maxx = stdscr.getmaxyx()
     longest = len(max(lines, key=len))
     pad = curses.newpad(len(lines), longest + 1)
