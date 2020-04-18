@@ -16,9 +16,10 @@ cgitb.enable(format="text")
 
 def event_loop(stdscr, lines):
     lines = re.split(f"{os.linesep}|\\n|\\r|\\x1b\\[0K", lines)
+    lines = [line for line in lines if line]
     maxy, maxx = stdscr.getmaxyx()
     longest = len(max(lines, key=len))
-    pad = curses.newpad(len(lines) + 1, longest + 1)
+    pad = curses.newpad(len(lines), longest + 1)
     pad.keypad(True)  # use function keys
     curses.curs_set(0)  # hide the cursor
     curses.start_color()
@@ -53,6 +54,18 @@ def event_loop(stdscr, lines):
         elif key == ord("l") or key == curses.KEY_RIGHT:
             if pmincol < longest - maxx:
                 pmincol += 1
+        elif key == ord("f") or key == curses.KEY_NPAGE:
+            if pminrow < len(lines) - maxy:
+                pminrow += maxy
+            if pminrow > len(lines) - maxy:
+                pminrow = len(lines) - maxy
+        elif key == ord("b") or key == curses.KEY_PPAGE:
+            if pminrow > 0:
+                pminrow -= maxy
+        elif key == ord("g") or key == curses.KEY_HOME:
+            pminrow = 0
+        elif key == ord("G") or key == curses.KEY_END:
+            pminrow = len(lines) - maxy
         elif key == curses.KEY_RESIZE:
             stdscr.erase()
             pad.erase()

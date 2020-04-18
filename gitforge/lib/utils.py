@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import readline
 import requests
 import subprocess
@@ -155,8 +156,11 @@ def paginated_requests(url, headers, params, results=[]):
 
 def print_output(output):
     if output and type(output) is list:
-        pager("\n".join(output))
+        if re.match(".*JOB.*IN.*FROM", output[0]):
+            pager("\n".join(output))
+        else:
+            print("\n".join(output))
     elif output and type(output) is str:
-        pager(output)
+        print(output)
     else:
         print("Nothing to see here!")
