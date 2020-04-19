@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tslight/gitforge",
-    install_requires=["cpick", "pandas", "requests"],
+    install_requires=["cpager", "cpick", "pandas", "requests"],
     packages=setuptools.find_packages(),
     data_files=[("share/gitforge", ["config"])],
     classifiers=(
