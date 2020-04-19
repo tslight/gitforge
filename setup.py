@@ -17,7 +17,8 @@ setuptools.setup(
     url="https://github.com/tslight/gitforge",
     install_requires=["cpager", "cpick", "pandas", "requests"],
     packages=setuptools.find_packages(),
-    data_files=[("share/gitforge", ["config"])],
+    include_package_data=True,
+    package_data={"": ["*config*", "*.cfg", "*.ini"]},
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: ISC License (ISCL)",

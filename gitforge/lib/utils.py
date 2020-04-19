@@ -6,11 +6,11 @@ import readline
 import requests
 import subprocess
 import sys
-import site
 
 from cpager import pager
 from cpick import pick
 from configparser import ConfigParser, ParsingError
+from pathlib import Path
 from shutil import copyfile
 from subprocess import call
 
@@ -68,13 +68,13 @@ def args_vs_config(args, config):
 
 
 def get_config(forge):
-    og = f"{site.USER_BASE}/share/gitforge/config"
+    og = f"{Path(__file__).parent.parent}/config"
     path = f"{os.path.expanduser('~/.gitforge.cfg')}"
 
     logging.debug(f"Copying {og} to {path}...")
 
     if not os.path.exists(og):
-        raise FileNotFoundError
+        raise FileNotFoundError(og)
 
     if not os.path.exists(path):
         copyfile(og, path)
