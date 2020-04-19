@@ -8,10 +8,11 @@ import subprocess
 import sys
 import site
 
+from cpager import pager
 from cpick import pick
 from configparser import ConfigParser, ParsingError
+from shutil import copyfile
 from subprocess import call
-from cpager import pager
 
 if os.name == "posix":
     from .color import ansi_color as color
@@ -67,10 +68,16 @@ def args_vs_config(args, config):
 
 
 def get_config(forge):
-    if site.check_enableusersite:
-        path = f"{site.USER_BASE}/share/gitforge/config"
-    else:
-        path = f"{sys.prefix}/share/gitforge/config"
+    og = f"{site.USER_BASE}/share/gitforge/config"
+    path = f"{os.path.expanduser('~/.gitforge.cfg')}"
+
+    logging.debug(f"Copying {og} to {path}...")
+
+    if not os.path.exists(og):
+        raise FileNotFoundError
+
+    if not os.path.exists(path):
+        copyfile(og, path)
 
     logging.debug(f"Looking for configuration at {path}...")
 
