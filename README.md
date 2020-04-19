@@ -16,10 +16,8 @@ Generate a **GitHub** *Personal Access Token* [here](https://github.com/settings
 
 Generate a **GitLab** *Personal Access Token* [here](https://gitlab.com/profile/personal_access_tokens).
 
-These details will be stored in `site.USER_BASE/share/gitforge/config`, which,
-in a POSIX environment, is usually `~/.local/share/gitforge/config`. I'm
-actually not sure where Python's `site.USER_BASE` is on Windows. Probably
-somewhere in `AppData`..
+These details will be stored in `$HOME/.gitforge.cfg`. You can edit this file
+if you want to change the default destination directory or your access token.
 
 The configuration looks something like this:
 
