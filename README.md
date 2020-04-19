@@ -42,7 +42,8 @@ remote commit. This is the default behaviour if no command is specified.
 
 `status`: Check repositories in destination for uncommitted changes.
 
-`jobs`: **GitLab ONLY** View the log of the last failed CI job run in repository.
+`jobs`: **GitLab ONLY** View the log of the last failed CI job run in
+repository. This will be opened in a Curses paging window.
 
 `schedules`: **GitLab ONLY** View all CI pipeline schedules ordered by next run
 time.
@@ -156,15 +157,10 @@ configuration**
 
 `github status` for GitHub
 
-**View job logs of latest failed GitLab CI job in "project-1" & "project-2" repository**
+**View job logs of latest failed GitLab CI job from "project-1" & "project-2"
+repository in a pager**
 
 `gitlab jobs -r project-1 project-2`
-
-Pipe this to `less -Rr` for maximum win:
-
-`gitlab jobs -r project-1 project-2 | less -Rr`
-
-Bosh.
 
 **View CI pipeline schedules of all projects in "group-name" group**
 
