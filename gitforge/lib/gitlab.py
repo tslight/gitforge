@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import pandas as pd
+import re
 
 from .git import Git
 from .utils import paginated_requests as get
@@ -169,7 +170,15 @@ class GitLab(Git):
                     results=[],
                 )
 
-                last_failed_job.insert(
+                lines = re.split(f"{os.linesep}|\\\\n|\\r", last_failed_job[0])
+
+                lines = [
+                    line
+                    for line in lines
+                    if not re.match(".*section_(start|end)\\:\\d+\\:.*$", line)
+                ]
+
+                lines.insert(
                     0,
                     f"{color.fg.yellow}JOB {color.fg.cyan}{failed_jobs[0]['id']} "
                     + f"{color.fg.yellow}IN {color.fg.cyan}{repo['name'].upper()} "
@@ -177,7 +186,7 @@ class GitLab(Git):
                     + f"{color.reset}\n",
                 )
 
-                return last_failed_job
+                return lines
 
     def get_last_failed_jobs(self, repos):
         output = []

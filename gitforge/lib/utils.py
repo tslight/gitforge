@@ -163,7 +163,7 @@ def paginated_requests(url, headers, params, results=[]):
 def print_output(output):
     if output and type(output) is list:
         if re.match(".*JOB.*IN.*FROM", output[0]):
-            pager(re.split(f"{os.linesep}|\\n|\\r", "\n".join(output)))
+            pager(output)
         else:
             print("\n".join(output))
     elif output and type(output) is str:
