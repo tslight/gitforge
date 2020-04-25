@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 from .utils import is_git_repo, run_cmd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -31,7 +32,7 @@ class Git:
         cmd = ["git", "-C", path, "pull"]
         retcode, stdout, stderr = run_cmd(cmd)
 
-        if "up to date" in stdout or stdout.endswith("Fetching origin"):
+        if re.search("up.to.date", stdout) or stdout.endswith("Fetching origin"):
             logging.info(f"{path}: Up to date")
         elif "no such ref was fetched" in stderr:
             logging.info(f"{path}: Empty repo")
