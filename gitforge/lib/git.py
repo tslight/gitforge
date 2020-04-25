@@ -32,7 +32,7 @@ class Git:
         cmd = ["git", "-C", path, "pull"]
         retcode, stdout, stderr = run_cmd(cmd)
 
-        if re.search("up.to.date", stdout) or stdout.endswith("Fetching origin"):
+        if re.search("up.to.date", stdout, re.IGNORECASE) or stdout.endswith("Fetching origin"):
             logging.info(f"{path}: Up to date")
         elif "no such ref was fetched" in stderr:
             logging.info(f"{path}: Empty repo")
