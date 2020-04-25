@@ -68,7 +68,7 @@ def args_vs_config(args, config):
 
 
 def get_config(forge):
-    og = f"{Path(__file__).parent.parent}/config"
+    og = f"{Path(__file__).parent.parent.parent}/example.cfg"
     path = f"{os.path.expanduser('~/.gitforge.cfg')}"
 
     if not os.path.exists(og):
