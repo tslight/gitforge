@@ -71,10 +71,9 @@ def get_config(forge):
     og = f"{Path(__file__).parent.parent.parent}/example.cfg"
     path = f"{os.path.expanduser('~/.gitforge.cfg')}"
 
-    if not os.path.exists(og):
-        raise FileNotFoundError(og)
-
     if not os.path.exists(path):
+        if not os.path.exists(og):
+            raise FileNotFoundError(og)
         logging.debug(f"Copying {og} to {path}...")
         copyfile(og, path)
 
