@@ -22,7 +22,8 @@ else:
 
 def chkdir(path):
     try:
-        path = os.path.normpath(os.path.expanduser(path))
+        logging.debug(f"Checking if {path} exists...")
+        path = os.path.normpath(os.path.expanduser(os.path.expandvars(path)))
         os.makedirs(path, exist_ok=True)
         return path
     except Exception as exc:
