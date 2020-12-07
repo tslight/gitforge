@@ -7,7 +7,9 @@ import requests
 import subprocess
 import sys
 
-from cpager import pager
+if os.name == "posix":
+    from cpager import pager
+
 from cpick import pick
 from configparser import ConfigParser, ParsingError
 from pathlib import Path
