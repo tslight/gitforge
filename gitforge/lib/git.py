@@ -1,6 +1,7 @@
 import os
 import logging
 import re
+from pathlib import Path
 from .utils import is_git_repo, run_cmd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -15,7 +16,7 @@ class Git:
         self.destination = destination
 
     def status(self, repo):
-        path = self.destination + "/" + repo["path"]
+        path = Path(self.destination + "/" + repo["path"])
 
         cmd = ["git", "-C", path, "status", "-s"]
 
@@ -29,6 +30,7 @@ class Git:
             logging.info(f"{path}: Nothing to commit.")
 
     def pull(self, path):
+        path = Path(path)
         cmd = ["git", "-C", path, "pull"]
         retcode, stdout, stderr = run_cmd(cmd)
 
@@ -44,6 +46,7 @@ class Git:
             return f"{color.fg.yellow}FETCHING {color.fg.cyan}{path}...{color.reset}\n{stdout}"
 
     def clone(self, path, url):
+        path = Path(path)
         os.makedirs(path, exist_ok=True)
         logging.info(f"Cloning {url} to {path}...")
 
@@ -56,7 +59,7 @@ class Git:
             return f"{color.fg.yellow}CLONED {color.fg.cyan}{path}{color.reset}"
 
     def clone_or_pull(self, repo):
-        path = repo["path"]
+        path = Path(repo["path"])
         url = repo["url"]
 
         fullpath = self.destination + "/" + path
