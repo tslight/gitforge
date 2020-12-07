@@ -16,7 +16,7 @@ class Git:
         self.destination = destination
 
     def status(self, repo):
-        path = Path(self.destination + "/" + repo["path"])
+        path = str(Path(self.destination + "/" + repo["path"]))
 
         cmd = ["git", "-C", path, "status", "-s"]
 
@@ -30,7 +30,7 @@ class Git:
             logging.info(f"{path}: Nothing to commit.")
 
     def pull(self, path):
-        path = Path(path)
+        path = str(Path(path))
         cmd = ["git", "-C", path, "pull"]
         retcode, stdout, stderr = run_cmd(cmd)
 
@@ -46,7 +46,7 @@ class Git:
             return f"{color.fg.yellow}FETCHING {color.fg.cyan}{path}...{color.reset}\n{stdout}"
 
     def clone(self, path, url):
-        path = Path(path)
+        path = str(Path(path))
         os.makedirs(path, exist_ok=True)
         logging.info(f"Cloning {url} to {path}...")
 
@@ -59,7 +59,7 @@ class Git:
             return f"{color.fg.yellow}CLONED {color.fg.cyan}{path}{color.reset}"
 
     def clone_or_pull(self, repo):
-        path = Path(repo["path"])
+        path = str(Path(repo["path"]))
         url = repo["url"]
 
         fullpath = self.destination + "/" + path
