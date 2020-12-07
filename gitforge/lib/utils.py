@@ -9,8 +9,8 @@ import sys
 
 if os.name == "posix":
     from cpager import pager
+    from cpick import pick
 
-from cpick import pick
 from configparser import ConfigParser, ParsingError
 from pathlib import Path
 from shutil import copyfile
