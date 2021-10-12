@@ -8,7 +8,7 @@ class GitHub(Git):
     def __init__(self, token, destination, protocol):
         super().__init__(destination)
         self.url = "https://api.github.com"
-        self.params = {"per_page": "100"}
+        self.params = {"per_page": "100", "affiliation": "owner"}
         self.headers = {"Authorization": f"token {token}"}
         self.protocol = protocol
 
