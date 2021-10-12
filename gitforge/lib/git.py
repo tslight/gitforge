@@ -16,18 +16,19 @@ class Git:
         self.destination = destination
 
     def status(self, repo):
-        path = str(Path(self.destination + "/" + repo["path"]))
-
-        cmd = ["git", "-C", path, "status", "-s"]
-
-        retcode, stdout, stderr = run_cmd(cmd)
-
-        if retcode == 0 and stdout:
-            return f"{color.fg.yellow}MODIFIED{color.fg.cyan} {path}...{color.reset}\n{stdout}"
-        elif stderr:
-            logging.error(f"{path}: SOMETHING WENT AWRY...\n{stderr}")
-        elif logging.INFO:
-            logging.info(f"{path}: Nothing to commit.")
+        path = Path(self.destination + "/" + repo["path"])
+        if path.exists():
+            path = str(path)
+            cmd = ["git", "-C", path, "status", "-s"]
+            retcode, stdout, stderr = run_cmd(cmd)
+            if retcode == 0 and stdout:
+                return f"{color.fg.yellow}MODIFIED{color.fg.cyan} {path}...{color.reset}\n{stdout}"
+            elif stderr:
+                logging.error(f"{path}: SOMETHING WENT AWRY...\n{stderr}")
+            elif logging.INFO:
+                logging.info(f"{path}: Nothing to commit.")
+        else:
+            logging.warn(f"{path}: Doesn't exist.")
 
     def pull(self, path):
         path = str(Path(path))
