@@ -5,10 +5,10 @@ from .utils import paginated_requests as get
 
 
 class GitHub(Git):
-    def __init__(self, token, destination, protocol):
+    def __init__(self, token, destination, protocol, affiliation):
         super().__init__(destination)
         self.url = "https://api.github.com"
-        self.params = {"per_page": "100", "affiliation": "owner"}
+        self.params = {"per_page": "100", "affiliation": ",".join(affiliation)}
         self.headers = {"Authorization": f"token {token}"}
         self.protocol = protocol
 

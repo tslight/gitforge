@@ -14,13 +14,31 @@ def get_args(forge):
         description=f"CLI {forge} API Client", formatter_class=SortingHelpFormatter,
     )
 
-    parser.add_argument(
-        "command",
-        choices=["sync", "status", "jobs", "schedules", "members"],
-        nargs="?",
-        default="sync",
-        help="command to run",
-    )
+    if forge == "GitHub":
+        parser.add_argument(
+            "command",
+            choices=["sync", "status"],
+            nargs="?",
+            default="sync",
+            help="command to run",
+        )
+        parser.add_argument(
+            "-a",
+            "--affiliation",
+            choices=["owner","collaborator","organization_member"],
+            default=["owner"],
+            nargs="+",
+            help="repository access level",
+        )
+    elif forge == "GitLab":
+        parser.add_argument(
+            "command",
+            choices=["sync", "status", "jobs", "schedules", "members"],
+            nargs="?",
+            default="sync",
+            help="command to run",
+        )
+
     parser.add_argument(
         "-d", "--destination", type=chkdir, required=False, help="destination path",
     )

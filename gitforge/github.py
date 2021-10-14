@@ -8,7 +8,7 @@ def main():
     mklog(args.verbosity)
     config = get_config("GitHub")
     token, destination = args_vs_config(args, config)
-    github = GitHub(token, destination, args.protocol)
+    github = GitHub(token, destination, args.protocol, args.affiliation)
     output = []
 
     if args.repos:
