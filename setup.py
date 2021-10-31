@@ -1,14 +1,26 @@
 # Copyright (c) 2018, Toby Slight. All rights reserved.
 # ISC License (ISCL) - see LICENSE file for details.
 
-import setuptools
+from setuptools import setup, find_packages
+import subprocess
+
+
+def get_latest_tag():
+    try:
+        cmd_output = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"], stdout=subprocess.PIPE
+        )
+        return cmd_output.stdout.strip().decode("utf-8")
+    except EnvironmentError:
+        print("Couldn't run git to get a version number for setup.py")
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name="gitforge",
-    version="0.1.8",
+    version=get_latest_tag(),
     author="Toby Slight",
     author_email="tslight@pm.me",
     description="Git Forge API Client..",
@@ -16,7 +28,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/tslight/gitforge",
     install_requires=["cpager", "cpick", "pandas", "requests"],
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
     include_package_data=True,
     package_data={"": ["*config*", "*.cfg", "*.ini"]},
     classifiers=(
