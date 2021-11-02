@@ -16,7 +16,7 @@ class Git:
         self.destination = destination
 
     def status(self, repo):
-        path = Path(self.destination + "/" + repo["path"])
+        path = Path(self.destination + "/" + repo["name"])
         if path.exists():
             path = str(path)
             cmd = ["git", "-C", path, "status", "-s"]
@@ -60,7 +60,7 @@ class Git:
             return f"{color.fg.yellow}CLONED {color.fg.cyan}{path}{color.reset}"
 
     def clone_or_pull(self, repo):
-        path = str(Path(repo["path"]))
+        path = str(Path(repo["name"]))
         url = repo["url"]
 
         fullpath = self.destination + "/" + path
