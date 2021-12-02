@@ -30,9 +30,13 @@ class GitLab(Git):
         for key, value in repo.items():
             if key == "id":
                 transformed["id"] = value
-            elif key == "name":
-                transformed["name"] = value
+            # elif key == "name":
+            #     transformed["name"] = value
+            # TODO: FIX THIS PROPERLY! This is a TEMPORARY hack to get what I
+            # want but I guess it needs to be an option to use paths or flat
+            # destination directory layout...
             elif key == "path_with_namespace":
+                transformed["name"] = value
                 transformed["path"] = value
             elif key == "ssh_url_to_repo" and self.protocol == "ssh":
                 transformed["url"] = value
@@ -146,7 +150,12 @@ class GitLab(Git):
 
         logging.info(f"Retrieving jobs for {repo['path']}...")
         logging.debug(f"URL: {url}")
-        jobs = get(url, self.headers, self.params, results=[],)
+        jobs = get(
+            url,
+            self.headers,
+            self.params,
+            results=[],
+        )
         logging.debug(json.dumps(jobs, indent=2))
 
         if jobs:
