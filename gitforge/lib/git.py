@@ -35,16 +35,19 @@ class Git:
         cmd = ["git", "-C", path, "pull"]
         retcode, stdout, stderr = run_cmd(cmd)
 
-        if re.search("up.to.date", stdout, re.IGNORECASE) or stdout.endswith(
-            "Fetching origin"
-        ):
-            logging.info(f"{path}: Up to date")
-        elif "no such ref was fetched" in stderr:
-            logging.info(f"{path}: Empty repo")
-        elif "Updating" in stdout:
-            return f"{color.fg.yellow}UPDATING {color.fg.cyan}{path}...{color.reset}\n{stdout}"
+        if retcode != 0:
+            logging.error(f"{color.fg.red}PULLING {path}...{color.reset}\n{stderr}")
         else:
-            return f"{color.fg.yellow}FETCHING {color.fg.cyan}{path}...{color.reset}\n{stdout}"
+            if re.search("up.to.date", stdout, re.IGNORECASE) or stdout.endswith(
+                "Fetching origin"
+            ):
+                logging.info(f"{path}: Up to date")
+            elif "no such ref was fetched" in stderr:
+                logging.info(f"{path}: Empty repo")
+            elif "Updating" in stdout:
+                return f"{color.fg.yellow}UPDATING {color.fg.cyan}{path}...{color.reset}\n{stdout}"
+            else:
+                return f"{color.fg.yellow}FETCHING {color.fg.cyan}{path}...{color.reset}\n{stdout}"
 
     def clone(self, path, url):
         path = str(Path(path))
@@ -55,7 +58,9 @@ class Git:
         retcode, stdout, stderr = run_cmd(cmd)
 
         if retcode != 0:
-            logging.error(f"Cloning {url} to {path}...\n{stderr}")
+            logging.error(
+                f"{color.fg.red}Cloning {url} to {path}...{color.reset}\n{stderr}"
+            )
         else:
             return f"{color.fg.yellow}CLONED {color.fg.cyan}{path}{color.reset}"
 
