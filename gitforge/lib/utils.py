@@ -144,13 +144,18 @@ def run_cmd(cmd):
     )
 
 
-def paginated_requests(url, headers, params, results=[]):
+def paginated_requests(url, headers, params, results=[], max_results=0):
     try:
         response = requests.get(url, headers=headers, params=params)
         if response.ok:
             results.extend(response.json())
-            if "next" in response.links:
+            if (
+                "next" in response.links
+                and max_results > 0
+                and len(results) < max_results
+            ):
                 url = response.links["next"]["url"]
+                logging.info(f"Getting next page of results from {url}...")
                 return paginated_requests(url, headers, params={}, results=results)
             return results
         raise AssertionError(response.reason)

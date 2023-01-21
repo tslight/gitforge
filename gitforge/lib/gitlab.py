@@ -145,57 +145,73 @@ class GitLab(Git):
 
         return repos
 
-    def get_last_failed_job(self, repo):
+    def get_job_logs(self, repo, job):
         url = f"{self.url}/projects/{repo['id']}/jobs"
-
-        logging.info(f"Retrieving jobs for {repo['path']}...")
-        logging.debug(f"URL: {url}")
-        jobs = get(
-            url,
+        logging.info(f"Getting logs for {job['name']} in {repo['name']}...")
+        logs = get(
+            f"{url}/{job['id']}/trace",
             self.headers,
             self.params,
             results=[],
         )
-        logging.debug(json.dumps(jobs, indent=2))
 
-        if jobs:
-            failed_jobs = [job for job in jobs if job["status"] == "failed"]
+        lines = re.split(f"{os.linesep}|\\\\n|\\r", logs[0])
 
-            if failed_jobs:
-                failed_jobs = sorted(
-                    failed_jobs, reverse=True, key=lambda k: k["created_at"]
-                )
+        lines = [
+            line
+            for line in lines
+            if not re.match(".*section_(start|end)\\:\\d+\\:.*$", line)
+        ]
 
-                logging.debug(json.dumps(failed_jobs, indent=2))
-                logging.info(
-                    f"Retrieving logs for {failed_jobs[0]['id']} "
-                    + f"in {repo['name']} from {failed_jobs[0]['created_at']}."
-                )
+        lines.insert(
+            0,
+            f"{color.fg.yellow}JOB {color.fg.cyan}{job['name']} "
+            + f"{color.fg.yellow}IN {color.fg.cyan}{repo['name'].upper()} "
+            + f"{color.fg.yellow}FROM {color.fg.cyan}{job['finished_at']}"
+            + f"{color.reset}\n",
+        )
 
-                last_failed_job = get(
-                    f"{url}/{failed_jobs[0]['id']}/trace",
-                    self.headers,
-                    self.params,
-                    results=[],
-                )
+        return lines
 
-                lines = re.split(f"{os.linesep}|\\\\n|\\r", last_failed_job[0])
+    def get_last_failed_job(self, repo):
+        url = f"{self.url}/projects/{repo['id']}/pipelines"
+        params = {
+            "membership": "true",
+            "status": "failed",
+            "order_by": "updated_at",
+        }
 
-                lines = [
-                    line
-                    for line in lines
-                    if not re.match(".*section_(start|end)\\:\\d+\\:.*$", line)
-                ]
+        logging.info(f"Retrieving failed pipelines for {repo['path']}...")
+        logging.debug(f"URL: {url}")
+        last_failed_pipeline = get(
+            url,
+            self.headers,
+            params,
+            results=[],
+            max_results=1,
+        )[0]
 
-                lines.insert(
-                    0,
-                    f"{color.fg.yellow}JOB {color.fg.cyan}{failed_jobs[0]['id']} "
-                    + f"{color.fg.yellow}IN {color.fg.cyan}{repo['name'].upper()} "
-                    + f"{color.fg.yellow}FROM {color.fg.cyan}{failed_jobs[0]['created_at']}"
-                    + f"{color.reset}\n",
-                )
+        if last_failed_pipeline:
+            id = last_failed_pipeline["id"]
+            url = f"{self.url}/projects/{repo['id']}/pipelines/{id}/jobs?scope[]=failed"
+            logging.info(
+                f"Retrieving failed jobs for pipeine {id} in {repo['path']}..."
+            )
 
-                return lines
+            failed_jobs = get(
+                url,
+                self.headers,
+                params,
+                results=[],
+            )
+
+            logs = []
+
+            for job in failed_jobs:
+                lines = self.get_job_logs(repo, job)
+                logs.extend(lines)
+
+            return logs
 
     def get_last_failed_jobs(self, repos):
         output = []
