@@ -20,6 +20,7 @@ class GitLab(Git):
         self.params = {
             "per_page": "100",
             "membership": "true",
+            "archived": "false",
         }
         self.headers = {"PRIVATE-TOKEN": token}
         self.protocol = protocol
